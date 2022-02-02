@@ -1,0 +1,6 @@
+messaging-app-backend/venv/
+messaging-app-backend/messaging_app/messaging/__pycache__
+messaging-app-backend/messaging_app/messaging/migrations/__pycache__
+messaging-app-backend/messaging_app/messaging_app/__pycache__
+
+messaging-app-frontend/node_modules/
