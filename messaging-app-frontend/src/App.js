@@ -3,9 +3,18 @@ import './App.css';
 import { Navigate } from "react-router-dom";
 
 function App() {
-  return (
-    <Navigate to="inbox" />
-  );
+  // Send users to inbox if authenticated
+  // Send users to signin if not
+  let token = localStorage.getItem('token')
+  if (typeof token === 'undefined' || token === '') {
+    return (
+      <Navigate to="signin" />
+    );
+  } else {
+    return (
+      <Navigate to="inbox" />
+    )
+  }
 }
 
 export default App;

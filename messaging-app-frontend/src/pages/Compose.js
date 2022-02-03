@@ -1,54 +1,92 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Header from './components/Header';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-
-import HeaderButton from './components/HeaderButton';
-import {
-  Mail,
-  Send,
-  Create,
-  Exit
-} from 'react-ionicons';
-import { Navigate } from 'react-ionicons';
+import Spinner from 'react-bootstrap/Spinner';
 
 const Compose = (props) => {
 
   let navigate = useNavigate();
 
+  const [recipient, setRecipient] = useState('');
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const [authToken, setAuthToken] = useState('');
+
+  useEffect(() => {
+
+    // Ensure that the user is authenticated
+    const token = localStorage.getItem('token')
+    if (typeof token === 'undefined' || token === '') {
+      navigate('/signin')
+    }
+
+    setAuthToken(token);
+
+  }, []);
+
+
   return (
     <>
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        borderBottomColor: 'black',
-        borderBottomStyle: 'solid',
-        borderBottomWidth: 1,
-      }}>
-        <HeaderButton
-          IoniconsComponent={Mail}
-          type="left"
-          onClick={()=>navigate('/inbox')}
-        />
-        <HeaderButton
-          IoniconsComponent={Send}
-          type="left"
-          onClick={()=>navigate('/sent')}
-        />
-        <HeaderButton
-          IoniconsComponent={Create}
-          type="left"
-          onClick={()=>navigate('/compose')}
-        />
-        <h3>Compose</h3>
-        <span style={{ flex: 1 }} />
-        <HeaderButton
-          IoniconsComponent={Exit}
-          type="right"
-          onClick={()=>navigate('/signin')}
-        />
-      </div>
+      <Header title="Compose" />
+      <Container>
+        <Form
+          onSubmit={e => {
+            e.preventDefault()
+            setSending(true);
+            console.log(recipient, title, body)
+
+            fetch(`http://localhost:8000/api/message/`,{
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${authToken}`,
+              },
+              body: JSON.stringify({
+                recipient,
+                body,
+                title,
+              })
+            }).then(response => {
+              response.json().then(async(json) => {
+                // TODO
+                console.log(json);
+              });
+              setSending(false);
+            }).catch((err) => {
+              console.error(err);
+              setSending(false);
+            });
+          }}
+        >
+          <Form.Group>
+            <Form.Label>Recipient</Form.Label>
+            <Form.Control required value={recipient} onChange={(e) => setRecipient(e.target.value)} type="text" placeholder="Enter your message recipient." />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Title</Form.Label>
+            <Form.Control required value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Enter your message title." />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Body</Form.Label>
+            <Form.Control required as="textarea" value={body} onChange={(e) => setBody(e.target.value)} type="text" placeholder="Enter your message body." />
+          </Form.Group>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}>
+            <Button variant="info" type="submit">
+              {sending ? <Spinner animation="border" variant="dark" /> : "Send"}
+            </Button>
+          </div>
+        </Form>
+      </Container>
     </>
   )
 }

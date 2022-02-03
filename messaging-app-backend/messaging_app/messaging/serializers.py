@@ -7,10 +7,13 @@ class UserSerializer(serializers.ModelSerializer):
     fields = ('id', 'username', 'password', 'email')
   
 class MessageSerializer(serializers.ModelSerializer):
+  receiver_id = serializers.IntegerField()
+  sender_id = serializers.IntegerField()
+
   class Meta:
     model = Message
-    fields = ('id', 'timestamp', 'title', 'body', 'receiver_id', 'sender_id')
-
+    fields = ('id', 'title', 'body', 'receiver_id', 'sender_id')
+  
 class OutboxSerializer(serializers.ModelSerializer):
   class Meta:
     model = Outbox

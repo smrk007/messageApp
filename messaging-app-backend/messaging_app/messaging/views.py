@@ -46,18 +46,26 @@ def user_details(request, id):
     user.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def message_list(request):
 
-  if request.method == 'GET':
-    data = Message.objects.all()
-    serializer = MessageSerializer(data, context={'request', request}, many=True)
-    return Response(serializer.data)
+  if request.method == 'POST':
+    # User must include a recipient
+    if 'recipient' not in request.data:
+      return Response('Missing recipient.', status=status.HTTP_400_BAD_REQUEST)
+    try:
+      recipient = DjUser.objects.get(username=request.data['recipient'])
+    except:
+      return Response('Recipient does not exist.', status=status.HTTP_400_BAD_REQUEST)
 
-  elif request.method == 'POST':
+    request.data['receiver_id'] = recipient.id
+    request.data['sender_id'] = request.user.id
+
     serializer =  MessageSerializer(data=request.data)
     if serializer.is_valid():
+      print(serializer)
+      print(serializer.validated_data)
       serializer.save()
       return Response(status=status.HTTP_201_CREATED) 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

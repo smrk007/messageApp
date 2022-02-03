@@ -1,54 +1,31 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Container from 'react-bootstrap/Container';
-
-import HeaderButton from './components/HeaderButton';
-import {
-  Mail,
-  Send,
-  Create,
-  Exit
-} from 'react-ionicons';
-import { Navigate } from 'react-ionicons';
+import Header from './components/Header';
 
 const Inbox = (props) => {
 
   let navigate = useNavigate();
 
+  const [authToken, setAuthToken] = useState('');
+
+  useEffect(() => {
+
+    // Ensure that the user is authenticated
+    let token = localStorage.getItem('token')
+    if (typeof token === 'undefined' || token === '') {
+      navigate('/signin')
+    }
+
+    setAuthToken(token);
+
+    // TODO: Get inbox contents
+
+  }, []);
+
   return (
     <>
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        borderBottomColor: 'black',
-        borderBottomStyle: 'solid',
-        borderBottomWidth: 1,
-      }}>
-        <HeaderButton
-          IoniconsComponent={Mail}
-          type="left"
-          onClick={()=>navigate('/inbox')}
-        />
-        <HeaderButton
-          IoniconsComponent={Send}
-          type="left"
-          onClick={()=>navigate('/sent')}
-        />
-        <HeaderButton
-          IoniconsComponent={Create}
-          type="left"
-          onClick={()=>navigate('/compose')}
-        />
-        <h3>Inbox</h3>
-        <span style={{ flex: 1 }} />
-        <HeaderButton
-          IoniconsComponent={Exit}
-          type="right"
-          onClick={()=>navigate('/signin')}
-        />
-      </div>
+      <Header title="Inbox" />
     </>
   )
 }
