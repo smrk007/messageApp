@@ -12,12 +12,7 @@ from .serializers import *
 @api_view(['POST'])
 def user_list(request):
 
-  if request.method == 'GET':
-    data = User.objects.all()
-    serializer = UserSerializer(data, context={'request', request}, many=True)
-    return Response(serializer.data)
-
-  elif request.method == 'POST':
+  if request.method == 'POST':
     serializer =  UserSerializer(data=request.data)
     if serializer.is_valid():
       print(serializer.validated_data['username'])
