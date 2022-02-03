@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework import status
+from django.contrib.auth.models import User as DjUser
 
 from .models import User, Message, Outbox, Inbox
 from .serializers import *
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def user_list(request):
 
   if request.method == 'GET':
@@ -17,12 +20,21 @@ def user_list(request):
   elif request.method == 'POST':
     serializer =  UserSerializer(data=request.data)
     if serializer.is_valid():
+      print(serializer.validated_data['username'])
+      user = DjUser.objects.create(
+        username=serializer.validated_data['username'],
+        email=serializer.validated_data['email']
+      )
+      user.set_password(serializer.validated_data['password'])
+      user.save()
       serializer.save()
       return Response(status=status.HTTP_201_CREATED) 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_details(request, id):
+
   try:
     user = User.objects.get(id=id)
   except User.DoesNotExist:
@@ -40,6 +52,7 @@ def user_details(request, id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def message_list(request):
 
   if request.method == 'GET':
@@ -55,7 +68,9 @@ def message_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def message_details(request, id):
+
   try:
     message = Message.objects.get(id=id)
   except Message.DoesNotExist:
@@ -73,6 +88,7 @@ def message_details(request, id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def inbox_list(request):
 
   if request.method == 'GET':
@@ -88,7 +104,9 @@ def inbox_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def inbox_details(request, id):
+
   try:
     inbox = Inbox.objects.get(id=id)
   except Inbox.DoesNotExist:
@@ -106,6 +124,7 @@ def inbox_details(request, id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def outbox_list(request):
 
   if request.method == 'GET':
@@ -121,7 +140,9 @@ def outbox_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def outbox_details(request, id):
+
   try:
     outbox = Outbox.objects.get(id=id)
   except Outbox.DoesNotExist:

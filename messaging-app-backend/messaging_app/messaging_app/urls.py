@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+from rest_framework.authtoken.views import obtain_auth_token
 from messaging import views
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
+  path('auth/', obtain_auth_token, name="auth"),
   re_path(r'^api/user/$', views.user_list),
   re_path(r'^api/user/([0-9])$', views.user_details),
   re_path(r'^api/message/$', views.message_list),

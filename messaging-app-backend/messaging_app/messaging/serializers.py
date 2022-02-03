@@ -4,7 +4,7 @@ from .models import User, Message, Outbox, Inbox
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('id', 'username', 'passwordHash')
+    fields = ('id', 'username', 'password', 'email')
   
 class MessageSerializer(serializers.ModelSerializer):
   class Meta:

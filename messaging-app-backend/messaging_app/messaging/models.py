@@ -1,12 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # CONSTANTS
 USERNAME_LENGTH = 128
 ID_LENGTH = 36
 
 class User(models.Model):
-  username = models.CharField(max_length=USERNAME_LENGTH)
-  passwordHash = models.CharField(max_length=128)
+  username = models.CharField(max_length=USERNAME_LENGTH, unique=True)
+  password = models.CharField(max_length=128)
+  email = models.EmailField(max_length=128)
 
 class Message(models.Model):
   timestamp = models.TimeField()
