@@ -16,14 +16,6 @@ class Message(models.Model):
   body = models.CharField(max_length=5000)
   sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE, db_constraint=False)
   receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE, db_constraint=False)
-
-class Outbox(models.Model):
-  user = models.ForeignKey(User, on_delete=models.CASCADE, db_constraint=False)
-  message = models.ForeignKey(Message, on_delete=models.CASCADE, db_constraint=False)
-  deleted = models.BooleanField()
-
-class Inbox(models.Model):
-  user = models.ForeignKey(User, on_delete=models.CASCADE, db_constraint=False)
-  message = models.ForeignKey(Message, on_delete=models.CASCADE, db_constraint=False)
-  deleted = models.BooleanField()
-  read = models.BooleanField()
+  read = models.BooleanField(default=False)
+  senderDel = models.BooleanField(default=False)
+  receiverDel = models.BooleanField(default=False)

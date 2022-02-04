@@ -39,8 +39,6 @@ const Compose = (props) => {
           onSubmit={e => {
             e.preventDefault()
             setSending(true);
-            console.log(recipient, title, body)
-
             fetch(`http://localhost:8000/api/message/`,{
               method: 'POST',
               headers: {
@@ -53,11 +51,12 @@ const Compose = (props) => {
                 title,
               })
             }).then(response => {
-              response.json().then(async(json) => {
-                // TODO
-                console.log(json);
-              });
               setSending(false);
+              if (response.ok) {
+                navigate('/sent');
+              } else {
+                console.error('error');
+              }
             }).catch((err) => {
               console.error(err);
               setSending(false);

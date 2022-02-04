@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Header from './components/Header';
+import MailItem from './components/MailItem';
 
 const Sent = (props) => {
 
   let navigate = useNavigate();
 
-  const [authToken, setAuthToken] = useState('');
+  const [outbox, setOutbox] = useState([]);
 
   useEffect(() => {
 
@@ -17,15 +18,35 @@ const Sent = (props) => {
       navigate('/signin')
     }
 
-    setAuthToken(token);
-
-    // TODO: Get sent contents
+    fetch(`http://localhost:8000/api/outbox/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+    }).then(response => {
+      response.json().then(json => {
+        setOutbox(json);
+      })
+    }).catch((err) => {
+      console.error(err);
+    });
 
   }, []);
 
   return (
     <>
       <Header title="Sent" />
+      {
+        outbox.map((item, idx) => (
+          <MailItem
+            key={idx}
+            username={item.recipient}
+            title={item.title}
+            body={item.body}
+          />
+        ))
+      }
     </>
   )
 }

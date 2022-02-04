@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.contrib.auth.models import User as DjUser
 
-from .models import User, Message, Outbox, Inbox
+from .models import User, Message
 from .serializers import *
 
 @api_view(['POST'])
@@ -62,13 +62,12 @@ def message_list(request):
     request.data['receiver_id'] = recipient.id
     request.data['sender_id'] = request.user.id
 
-    serializer =  MessageSerializer(data=request.data)
-    if serializer.is_valid():
-      print(serializer)
-      print(serializer.validated_data)
-      serializer.save()
+    messageSerializer =  MessageSerializer(data=request.data)
+    if messageSerializer.is_valid():
+      messageSerializer.save()
+      print(messageSerializer)
       return Response(status=status.HTTP_201_CREATED) 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(messageSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
@@ -131,8 +130,10 @@ def inbox_details(request, id):
 def outbox_list(request):
 
   if request.method == 'GET':
-    data = Outbox.objects.all()
-    serializer = OutboxSerializer(data, context={'request', request}, many=True)
+    data = Message.objects.filter(sender_id=request.user.id, senderDel=False)
+    serializer = MessageSerializer(data, context={'request', request}, many=True)
+    for item in serializer.data:
+      item['recipient'] = DjUser.objects.get(id=item['receiver_id']).username
     return Response(serializer.data)
 
   elif request.method == 'POST':

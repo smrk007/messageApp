@@ -24,6 +24,7 @@ const Header = ({
       borderBottomColor: 'black',
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
+      backgroundColor: 'white',
     }}>
       <HeaderButton
         IoniconsComponent={Mail}
