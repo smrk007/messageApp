@@ -8,6 +8,8 @@ import {
   ArrowBack
 } from 'react-ionicons';
 
+import { serverIp } from '../config';
+
 const Inbox = (props) => {
 
   let navigate = useNavigate();
@@ -24,7 +26,7 @@ const Inbox = (props) => {
 
     // Immediately get the inbox items when
     // the page is loaded
-    fetch(`http://localhost:8000/api/inbox/`, {
+    fetch(`http://${serverIp}:8000/api/inbox/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -74,7 +76,7 @@ const Inbox = (props) => {
               onClick={() => {
                 if (window.confirm("Are you sure you want to delete this message? This cannot be undone.")) {
                   // Delete from inbox (server side)
-                  fetch(`http://localhost:8000/api/inbox/${mailItem.id}`, {
+                  fetch(`http://${serverIp}:8000/api/inbox/${mailItem.id}`, {
                     method: 'DELETE',
                     headers: {
                       'Content-Type': 'application/json',

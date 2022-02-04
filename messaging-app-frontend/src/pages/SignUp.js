@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import { serverIp } from "../config";
+
 const SignIn = (props) => {
 
   let navigate = useNavigate();
@@ -22,7 +24,7 @@ const SignIn = (props) => {
   const [email, setEmail] = useState('');
 
   const submitForm = () => {
-    fetch(`http://localhost:8000/api/user/`, {
+    fetch(`http://${serverIp}:8000/api/user/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,9 +35,8 @@ const SignIn = (props) => {
         email,
       })
     }).then(response => {
-      console.log(response)
       if (response.ok) {
-        fetch(`http://localhost:8000/auth/`, {
+        fetch(`http://${serverIp}:8000/auth/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +52,10 @@ const SignIn = (props) => {
           });
         })
       } else {
-        navigate('/signin')
+        response.json().then(json => {
+          alert(Object.values(json).join('\n'))
+        })
+        // navigate('/signin')
       }
     })
   }
@@ -76,17 +80,17 @@ const SignIn = (props) => {
         >
           <Form.Group>
             <Form.Label>Username</Form.Label>
-            <Form.Control value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Enter your username." />
+            <Form.Control required value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Enter your username." />
           </Form.Group>
           <Form.Group>
             <Form.Label>Email</Form.Label>
-            <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email." />
+            <Form.Control required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email." />
           </Form.Group>
           <Form.Group>
             <Form.Label>Password</Form.Label>
-            <Form.Control value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password." />
+            <Form.Control required value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password." />
           </Form.Group>
-          <Button onClick={submitForm} type="submit">
+          <Button type="submit">
             Sign Up
           </Button>
         </Form>

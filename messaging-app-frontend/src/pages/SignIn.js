@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import { serverIp } from "../config";
+
 const SignIn = (props) => {
 
   let navigate = useNavigate();
@@ -21,7 +23,7 @@ const SignIn = (props) => {
   const [password, setPassword] = useState('');
 
   const submitForm = () => {
-    fetch(`http://localhost:8000/auth/`, {
+    fetch(`http://${serverIp}:8000/auth/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,10 +33,18 @@ const SignIn = (props) => {
         password
       })
     }).then(response => {
-      response.json().then(async (json) => {
-        localStorage.setItem('token', json.token);
-        navigate('/inbox');
-      });
+      console.log(response);
+      if (response.ok) {
+        response.json().then(async (json) => {
+          localStorage.setItem('token', json.token);
+          navigate('/inbox');
+        });
+      } else {
+        response.json().then(async (json) => {
+          console.log(json)
+          alert(json.non_field_errors.join('\n'))
+        });
+      }
     })
   }
 
@@ -58,13 +68,13 @@ const SignIn = (props) => {
         >
           <Form.Group>
             <Form.Label>Username</Form.Label>
-            <Form.Control value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Enter your username." />
+            <Form.Control required value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Enter your username." />
           </Form.Group>
           <Form.Group>
             <Form.Label>Password</Form.Label>
-            <Form.Control value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password." />
+            <Form.Control required value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password." />
           </Form.Group>
-          <Button onClick={submitForm} type="submit">
+          <Button type="submit">
             Sign In
           </Button>
         </Form>

@@ -18,6 +18,7 @@ def user_list(request):
       username=serializer.validated_data['username'],
       email=serializer.validated_data['email']
     )
+    print('password', serializer.validated_data['password'])
     user.set_password(serializer.validated_data['password'])
     user.save()
     serializer.save()
@@ -33,7 +34,7 @@ def message_list(request):
   try:
     recipient = DjUser.objects.get(username=request.data['recipient'])
   except:
-    return Response('Recipient does not exist.', status=status.HTTP_400_BAD_REQUEST)
+    return Response({'username': ['Recipient does not exist.']}, status=status.HTTP_400_BAD_REQUEST)
 
   request.data['receiver_id'] = recipient.id
   request.data['sender_id'] = request.user.id

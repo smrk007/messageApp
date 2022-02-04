@@ -7,6 +7,8 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
 
+import { serverIp } from '../config';
+
 const Compose = (props) => {
 
   let navigate = useNavigate();
@@ -38,8 +40,18 @@ const Compose = (props) => {
         <Form
           onSubmit={e => {
             e.preventDefault()
+
+            if (title.length === 0) {
+              alert("Please enter a title")
+              return;
+            }
+            if (body.length === 0) {
+              alert("Please enter text into the body")
+              return;
+            }
+
             setSending(true);
-            fetch(`http://localhost:8000/api/message/`,{
+            fetch(`http://${serverIp}:8000/api/message/`,{
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -55,7 +67,9 @@ const Compose = (props) => {
               if (response.ok) {
                 navigate('/sent');
               } else {
-                console.error('error');
+                response.json().then(json => {
+                  alert(Object.values(json).join('\n'));
+                })
               }
             }).catch((err) => {
               console.error(err);
@@ -69,11 +83,11 @@ const Compose = (props) => {
           </Form.Group>
           <Form.Group>
             <Form.Label>Title</Form.Label>
-            <Form.Control required value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Enter your message title." />
+            <Form.Control value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Enter your message title." />
           </Form.Group>
           <Form.Group>
             <Form.Label>Body</Form.Label>
-            <Form.Control required as="textarea" value={body} onChange={(e) => setBody(e.target.value)} type="text" placeholder="Enter your message body." />
+            <Form.Control as="textarea" value={body} onChange={(e) => setBody(e.target.value)} type="text" placeholder="Enter your message body." />
           </Form.Group>
           <div style={{
             display: 'flex',
