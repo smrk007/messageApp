@@ -1,10 +1,6 @@
 # messageApp
 
-### Important
-
-So far it has only been tested to work using localhost, so please use localhost when testing.
-
-### How to run
+### Starting up the website
 
 ```
 git clone https://github.com/smrk007/messageApp.git
@@ -20,3 +16,7 @@ cd ../../messaging-app-frontend
 npm install
 npm run start > react_logs.txt 2>&1 &
 ```
+
+### Testing out the website
+
+Simply go to http://localhost:3000/ !
