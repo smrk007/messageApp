@@ -6,7 +6,7 @@ function App() {
   // Send users to inbox if authenticated
   // Send users to signin if not
   let token = localStorage.getItem('token')
-  if (typeof token === 'undefined' || token === '') {
+  if (token == null || token === '') {
     return (
       <Navigate to="signin" />
     );

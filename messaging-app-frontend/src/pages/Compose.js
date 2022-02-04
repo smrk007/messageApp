@@ -24,7 +24,8 @@ const Compose = (props) => {
 
     // Ensure that the user is authenticated
     const token = localStorage.getItem('token')
-    if (typeof token === 'undefined' || token === '') {
+    console.log(token)
+    if (token == null || token === '') {
       navigate('/signin')
     }
 

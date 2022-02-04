@@ -21,7 +21,7 @@ const Sent = (props) => {
 
     // Ensure that the user is authenticated
     let token = localStorage.getItem('token')
-    if (typeof token === 'undefined' || token === '') {
+    if (token == null || token === '') {
       navigate('/signin')
     }
 

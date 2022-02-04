@@ -13,7 +13,7 @@ const SignIn = (props) => {
 
     // Ensure that the user is unauthenticated
     let token = localStorage.getItem('token')
-    if (typeof token !== 'undefined' && token !== '') {
+    if (token != null && token !== '') {
       navigate('/inbox')
     }
 
