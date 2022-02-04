@@ -2,10 +2,10 @@
 
 ### Prerequesites
 
-"""
+```
 virtualenv
 npm
-"""
+```
 
 ### Starting up the website
 
