@@ -12,7 +12,7 @@ git clone https://github.com/smrk007/messageApp.git
 cd messageApp/messaging-app-backend
 virtualenv venv
 source venv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 cd messaging_app
 python manage.py runserver > django_logs.txt 2>&1 &
 
