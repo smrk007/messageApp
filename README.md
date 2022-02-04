@@ -2,7 +2,7 @@
 
 ### Important
 
-So far it has only been tested to work using localhost, so please use locally when testing.
+So far it has only been tested to work using localhost, so please use localhost when testing.
 
 ### How to run
 
