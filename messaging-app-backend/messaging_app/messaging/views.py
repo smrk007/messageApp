@@ -125,7 +125,7 @@ def inbox_details(request, id):
     inbox.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def outbox_list(request):
 
@@ -134,31 +134,17 @@ def outbox_list(request):
     serializer = MessageSerializer(data, context={'request', request}, many=True)
     for item in serializer.data:
       item['recipient'] = DjUser.objects.get(id=item['receiver_id']).username
+      item['sender'] = DjUser.objects.get(id=item['sender_id']).username
     return Response(serializer.data)
 
-  elif request.method == 'POST':
-    serializer =  OutboxSerializer(data=request.data)
-    if serializer.is_valid():
-      serializer.save()
-      return Response(status=status.HTTP_201_CREATED) 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['PUT', 'DELETE'])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def outbox_details(request, id):
 
   try:
-    outbox = Outbox.objects.get(id=id)
-  except Outbox.DoesNotExist:
-    return Response(status=status.HTTP_404_NOT_FOUND)
-  
-  if request.method == 'PUT':
-    serializer = OutboxSerializer(outbox, data=request.data, context={'request': request})
-    if serializer.is_valid():
-      serializer.save()
-      return Response(status=status.HTTP_204_NO_CONTENT)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-  
-  elif request.method == 'DELETE':
-    outbox.delete()
+    message = Message.objects.get(id=id)
+    message.senderDel = True
+    message.save()
     return Response(status=status.HTTP_204_NO_CONTENT)
+  except Message.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)

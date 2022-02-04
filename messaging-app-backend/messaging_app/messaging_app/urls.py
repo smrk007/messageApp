@@ -21,11 +21,11 @@ from messaging import views
 urlpatterns = [
   path('auth/', obtain_auth_token, name="auth"),
   re_path(r'^api/user/$', views.user_list),
-  re_path(r'^api/user/([0-9])$', views.user_details),
+  re_path(r'^api/user/([0-9]+)$', views.user_details),
   re_path(r'^api/message/$', views.message_list),
-  re_path(r'^api/message/([0-9])$', views.message_details),
+  re_path(r'^api/message/([0-9]+)$', views.message_details),
   re_path(r'^api/inbox/$', views.inbox_list),
-  re_path(r'^api/inbox/([0-9])$', views.inbox_details),
+  re_path(r'^api/inbox/([0-9]+)$', views.inbox_details),
   re_path(r'^api/outbox/$', views.outbox_list),
-  re_path(r'^api/outbox/([0-9])$', views.outbox_details)
+  re_path(r'^api/outbox/([0-9]+)$', views.outbox_details)
 ]

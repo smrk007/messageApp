@@ -4,7 +4,7 @@ const MailItem = ({
   username,
   title,
   body,
-  contentId
+  onSelect
 }) => {
 
   const [hovered, setHovered] = useState(false);
@@ -13,6 +13,7 @@ const MailItem = ({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onSelect}
       style={{
         borderBottomColor: 'black',
         borderBottomWidth: 1,

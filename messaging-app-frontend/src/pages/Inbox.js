@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Header from './components/Header';
+import MailItem from './components/MailItem';
 
 const Inbox = (props) => {
 
   let navigate = useNavigate();
-
-  const [authToken, setAuthToken] = useState('');
+  const [inbox, setInbox] = useState([]);
 
   useEffect(() => {
 
@@ -17,8 +17,6 @@ const Inbox = (props) => {
       navigate('/signin')
     }
 
-    setAuthToken(token);
-
     // TODO: Get inbox contents
 
   }, []);
@@ -26,6 +24,15 @@ const Inbox = (props) => {
   return (
     <>
       <Header title="Inbox" />
+      {
+        inbox.length === 0 ?
+        <div>You have no items in your inbox.</div>
+        :
+        inbox.map(item => (
+          <MailItem
+          />
+        ))
+      }
     </>
   )
 }
